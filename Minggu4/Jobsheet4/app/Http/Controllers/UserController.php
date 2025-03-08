@@ -11,17 +11,24 @@ class UserController extends Controller
 {
     public function index()
     {
-        //PRAKTIKUM 2.4
-        $user = UserModel::firstOrNew(
-            [
-                'username' => 'manager33',
-                'nama' => 'Manager Tiga Tiga',
-                'level_id' => 2
-            ]
-        );
-        $user->password = Hash::make('12345');
+        //PRAKTIKUM 2.5
+        $user = UserModel::create([
+            'username' => 'manager11',
+            'nama' => 'Manager11',
+            'password' => Hash::make('12345'),
+            'level_id' => 2,
+        ]);
+
+        $user->username = 'manager12';
+
         $user->save();
-        
-        return view('user', ['data' => $user]);
+
+        $user->wasChanged(); // true
+        $user->wasChanged('username'); // true
+
+        $user->wasChanged(['username', 'level_id']); // true
+        $user->wasChanged('nama'); // false
+
+        dd($user->wasChanged(['nama', 'username'])); // tru
     }
 } 
