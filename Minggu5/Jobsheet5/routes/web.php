@@ -25,7 +25,6 @@ Route::get('/', function () {
 });
 
 Route::get('/level', [LevelController::class, 'index']);
-Route::get('/kategori', [KategoriController::class, 'index']);
 Route::get('/user', [UserController::class, 'index']);
 
 Route::get('/user/tambah', [UserController::class, 'tambah']);
@@ -37,4 +36,8 @@ Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
 //JOBSHEET 5 
 //PRAKTIKUM 2 - NO 12 
-// Route::get('/kategori', [HomeController::class, 'index']);
+Route::get('/kategori', [KategoriController::class, 'index']);
+
+//PRAKTIKUM 3 - NO 1 
+Route::get('/kategori/create', [KategoriController::class, 'create']);
+Route::post('/kategori', [KategoriController::class, 'store']); // Pastikan ada ini
