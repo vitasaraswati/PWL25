@@ -40,4 +40,7 @@ Route::get('/kategori', [KategoriController::class, 'index']);
 
 //PRAKTIKUM 3 - NO 1 
 Route::get('/kategori/create', [KategoriController::class, 'create']);
-Route::post('/kategori', [KategoriController::class, 'store']); // Pastikan ada ini
+Route::post('/kategori', [KategoriController::class, 'store']); 
+
+//TUGAS - NO 1
+Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
