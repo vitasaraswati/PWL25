@@ -301,12 +301,12 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
+            'text' => 'Manage Kategori',
+            'url' => 'kategori',
+            'icon' => 'fas fa-list',
         ],
         [
-            'type' => 'fullscreen-widget',
+            'type' => 'navbar-search',
             'topnav_right' => true,
         ],
 
