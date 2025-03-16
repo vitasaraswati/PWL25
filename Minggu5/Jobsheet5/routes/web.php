@@ -47,3 +47,5 @@ Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kat
 //TUGAS - NO 3 
 Route::get('/kategori/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
 Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+//TUGAS - NO 4
+Route::get('/kategori/delete/{id}', [KategoriController::class, 'delete'])->name('kategori.delete');
