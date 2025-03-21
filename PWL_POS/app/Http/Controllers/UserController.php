@@ -12,14 +12,14 @@ class UserController extends Controller
     public function index()
     {
         //tambah data user dengan Eloquent Model
-        $data = [
+        // $data = [
         
-            'username' => 'customer-2',
-            'nama' => 'Pelanggan Kedua',
-            'password' => Hash::make('12345'),
-            'level_id' => 4
-         ];
-         UserModel::insert($data);//tambahkan data ke tabel user
+        //     'username' => 'customer-2',
+        //     'nama' => 'Pelanggan Kedua',
+        //     'password' => Hash::make('12345'),
+        //     'level_id' => 4
+        //  ];
+        //  UserModel::insert($data);//tambahkan data ke tabel user
          
         // coba akses model UserModel
         $user = UserModel::all(); // ambil semua data dari tabel m_user
