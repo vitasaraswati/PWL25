@@ -8,6 +8,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WelcomeController; //praktikum 5.2 no 5
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,8 @@ Route::post('user/tambah_simpan', [UserController::class, 'tambah_simpan']);
 Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
 Route::put('user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+
+//PRAKTIKUM 5.2 
+//praktikum 2 - no 5
+Route::get('/', [WelcomeController::class, 'index']);
