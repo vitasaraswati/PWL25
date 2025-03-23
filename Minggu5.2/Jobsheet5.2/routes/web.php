@@ -5,8 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\LevelController;
-use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LevelController; //tugas1 m_level
+use App\Http\Controllers\KategoriController; //tugas2 m_kategori
 use App\Http\Controllers\WelcomeController; //praktikum 2 minggu5.2 no 5
 use App\Http\Controllers\UserController; //praktikum3 minggu5.2 no 2
 /*
@@ -51,6 +51,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy']); // menghapus data user
 }); 
 
+//tugas 1 m_level
 Route::group(['prefix' => 'level'], function () {
     Route::get('/', [LevelController::class, 'index']); // menampilkan halaman awal level
     Route::post("/list", [LevelController::class, 'list']); // menampilkan data level dalam bentuk json untuk datatables
@@ -60,4 +61,16 @@ Route::group(['prefix' => 'level'], function () {
     Route::get('/{id}/edit', [LevelController::class, 'edit']); // menampilkan halaman form edit level
     Route::put('/{id}', [LevelController::class, 'update']); // menyimpan perubahan data level
     Route::delete('/{id}', [LevelController::class, 'destroy']); // menghapus data level
+});
+
+//tugas 2 m_kategori
+Route::group(['prefix' => 'kategori'], function () {
+    Route::get('/', [KategoriController::class, 'index']); // menampilkan halaman awal kategori
+    Route::post("/list", [KategoriController::class, 'list']); // menampilkan data kategori dalam bentuk json untuk datatables
+    Route::get('/create', [KategoriController::class, 'create']); // menampilkan halaman form tambah kategori
+    Route::post('/', [KategoriController::class, 'store']); // menyimpan data kategori baru
+    Route::get('/{id}', [KategoriController::class, 'show']); // menampilkan detail kategori
+    Route::get('/{id}/edit', [KategoriController::class, 'edit']); // menampilkan halaman form edit kategori
+    Route::put('/{id}', [KategoriController::class, 'update']); // menyimpan perubahan data kategori
+    Route::delete('/{id}', [KategoriController::class, 'destroy']); // menghapus data kategori
 });
