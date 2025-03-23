@@ -51,6 +51,9 @@ Route::group(['prefix' => 'user'], function () {
     //JS6 -PRAK1- route tambah data dengan ajax
     Route::get('/create_ajax', [UserController::class, 'create_ajax']); // Menampilkan halaman form tambah user Ajax
     Route::post('/ajax', [UserController::class, 'store_ajax']); // Menyimpan data user baru Ajax
+    //JS6 -PRAK1- route edit data dengan ajax
+    Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']); // Menampilkan halaman form edit user Ajax
+    Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']); // Menyimpan perubahan data user Ajax
 
     Route::get('/{id}', [UserController::class, 'show']); // menampilkan detail user
     Route::get('/{id}/edit', [UserController::class, 'edit']); // menampilkan halaman form edit user
