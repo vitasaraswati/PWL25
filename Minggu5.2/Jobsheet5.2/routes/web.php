@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\LevelController; //tugas1 m_level
 use App\Http\Controllers\KategoriController; //tugas2 m_kategori
+use App\Http\Controllers\BarangController; //tugas3 m_barang
+use App\Http\Controllers\SupplierController; //tugas4 m_supplier
 use App\Http\Controllers\WelcomeController; //praktikum 2 minggu5.2 no 5
 use App\Http\Controllers\UserController; //praktikum3 minggu5.2 no 2
 /*
@@ -73,4 +75,16 @@ Route::group(['prefix' => 'kategori'], function () {
     Route::get('/{id}/edit', [KategoriController::class, 'edit']); // menampilkan halaman form edit kategori
     Route::put('/{id}', [KategoriController::class, 'update']); // menyimpan perubahan data kategori
     Route::delete('/{id}', [KategoriController::class, 'destroy']); // menghapus data kategori
+});
+
+//tugas 3 m_barang
+Route::group(['prefix' => 'barang'], function () {
+    Route::get('/', [BarangController::class, 'index']); // menampilkan halaman awal barang
+    Route::post("/list", [BarangController::class, 'list']); // menampilkan data barang dalam bentuk json untuk datatables
+    Route::get('/create', [BarangController::class, 'create']); // menampilkan halaman form tambah barang
+    Route::post('/', [BarangController::class, 'store']); // menyimpan data barang baru
+    Route::get('/{id}', [BarangController::class, 'show']); // menampilkan detail barang
+    Route::get('/{id}/edit', [BarangController::class, 'edit']); // menampilkan halaman form edit barang
+    Route::put('/{id}', [BarangController::class, 'update']); // menyimpan perubahan data barang
+    Route::delete('/{id}', [BarangController::class, 'destroy']); // menghapus data barang
 });
