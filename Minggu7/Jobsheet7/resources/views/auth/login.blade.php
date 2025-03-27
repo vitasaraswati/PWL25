@@ -16,6 +16,7 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
     </head>
+    
     <body class="hold-transition login-page">
         <div class="login-box">
             <!-- /.login-logo -->
@@ -53,9 +54,13 @@
                                 </div>
                             </div>
                             <!-- /.col -->
-                            <div class="col-4">
+                            <div class="col-12">
                                 <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                             </div>
+                            <div class="col-12 mt-1">
+                                <p>Don't have an account?</p>
+                                <a href="{{ url('/register') }}" class="btn btn-secondary btn-block">Register</a>
+                         </div>
                             <!-- /.col -->
                         </div>
                     </form>
