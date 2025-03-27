@@ -53,7 +53,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::delete('/{id}', [UserController::class, 'destroy']); // Hapus user
     });
 
-    Route::group(['prefix' => 'level'], function () {
+    //route level
+    Route::middleware(['authorize:ADM']) -> group (function() {
         Route::get('/', [LevelController::class, 'index']);
         Route::post("/list", [LevelController::class, 'list']);
         Route::get('/create', [LevelController::class, 'create']);
