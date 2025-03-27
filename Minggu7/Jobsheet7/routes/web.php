@@ -30,7 +30,7 @@ Route::pattern('id', '[0-9]+');
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
-Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+Route::POST('logout', [AuthController::class, 'logout'])->name('logout'); //ubah methodnya jadi POST
 
 Route::middleware(['auth'])->group(function () { //artinya semua route di dalam group ini harus login
     
