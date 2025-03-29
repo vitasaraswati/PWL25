@@ -87,7 +87,7 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         //Impor File Excel Menu Data Level 
         Route::get('import', [LevelController::class, 'import']); // ajax form upload excel
         Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
-        //Ekspor file excel data user 
+        //Ekspor file excel data level 
         Route::get('export_excel', [LevelController::class, 'export_excel']); //export excel
         });
     });
@@ -137,6 +137,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         //Impor File Excel Menu Data Supplier 
         Route::get('import', [SupplierController::class, 'import']); // ajax form upload excel
         Route::post('import_ajax', [SupplierController::class, 'import_ajax']); // ajax import excel
+        //Ekspor file excel data supplier 
+        Route::get('export_excel', [SupplierController::class, 'export_excel']); //export excel
         });
     });
 
