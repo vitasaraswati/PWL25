@@ -65,7 +65,7 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         });
     });
 
-    // Route Data Level User (Admin & Manajer)
+    // Route Data Level User (Admin)
     Route::middleware(['authorize:ADM'])->group(function(){
         Route::group(['prefix' => 'level'], function () {
         Route::get('/', [LevelController::class, 'index']); // Halaman utama level
@@ -125,28 +125,31 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         });
     });
 
-    // Route Data Barang (khusus staff)
+    // Route Data Barang (khusus staff, admin, dan manajer)
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
         Route::group(['prefix' => 'barang'], function () {
-        Route::get('/barang', [BarangController::class, 'index']); // Halaman utama barang untuk staff
-        Route::post('/barang/list', [BarangController::class, 'list']); // Data barang untuk staff
-        Route::get('/barang/{id}', [BarangController::class, 'show']); // Detail barang untuk staff
+            Route::get('/', [BarangController::class, 'index']); // Menampilkan daftar barang
+            Route::post('/list', [BarangController::class, 'list']); // Menampilkan data barang dalam bentuk JSON untuk datatables
+            Route::get('/{id}', [BarangController::class, 'show']); // Menampilkan detail barang
         });
     });
 
     // Route Data Barang (Admin & Manajer)
     Route::middleware(['authorize:ADM,MNG'])->group(function(){
-        Route::get('/barang', [BarangController::class, 'index']);
-        Route::post('/barang/list', [BarangController::class, 'list']);
-        Route::get('/barang/create_ajax', [BarangController::class, 'create_ajax']); // ajax form create
-        Route::post('/barang_ajax', [BarangController::class, 'store_ajax']); // ajax store
-        Route::get('/barang/{id}/edit_ajax', [BarangController::class, 'edit_ajax']); // ajax form edit
-        Route::put('/barang/{id}/update_ajax', [BarangController::class, 'update_ajax']); // ajax update
-        Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // ajax form confirm
-        Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // ajax delete
-        
-        //import data barang via upload file excel  
-        Route::get('/barang/import', [BarangController::class, 'import']); // ajax form upload excel
-        Route::post('/barang/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
+        Route::group(['prefix' => 'barang'], function () {
+            Route::get('/create', [BarangController::class, 'create']); // Form tambah barang
+            Route::post('/', [BarangController::class, 'store']); // Simpan barang baru
+            Route::get('/create_ajax', [BarangController::class, 'create_ajax']); // Form tambah barang AJAX
+            Route::post('/ajax', [BarangController::class, 'store_ajax']); // Simpan barang baru AJAX
+            Route::get('/{id}/edit', [BarangController::class, 'edit']); // Form edit barang
+            Route::put('/{id}', [BarangController::class, 'update']); // Simpan perubahan barang
+            Route::get('/{id}/edit_ajax', [BarangController::class, 'edit_ajax']); // Form edit barang AJAX
+            Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']); // Simpan perubahan barang AJAX
+            Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // Form konfirmasi hapus barang AJAX
+            Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // Hapus barang AJAX
+            Route::delete('/{id}', [BarangController::class, 'destroy']); // Hapus barang
+            
+            Route::get('import', [BarangController::class, 'import']); // ajax form upload excel
+            Route::post('import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
         });
-    });
+    });});
