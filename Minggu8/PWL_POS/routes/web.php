@@ -87,8 +87,10 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']); // Hapus via Ajax
         Route::delete('/{id}', [LevelController::class, 'destroy']); // Hapus level
         //Impor File Excel Menu Data Level 
-            Route::get('import', [LevelController::class, 'import']); // ajax form upload excel
-            Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
+        Route::get('import', [LevelController::class, 'import']); // ajax form upload excel
+        Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
+        //Ekspor file excel data user 
+        Route::get('export_excel', [LevelController::class, 'export_excel']); //export excel
         });
     });
 

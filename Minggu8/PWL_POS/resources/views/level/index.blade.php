@@ -3,10 +3,10 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">{{ $page->title }}</h3>
+            <h3 class="card-title">Daftar Level</h3>
             <div class="card-tools">
                 <button onclick="modalAction('{{ url('/level/import') }}')" class="btn btn-info">Import Level</button>
-            <a href="{{ url('/level/create') }}" class="btn btn-primary">Tambah Data</a>
+                <a href="{{ url('/level/export_excel') }}" class="btn btn-primary"><i class="fa fa-file- excel"></i> Export Level</a>
             <button onclick="modalAction('{{ url('/level/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
             </div>
         </div>
