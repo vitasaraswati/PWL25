@@ -25,8 +25,6 @@ use App\Models\KategoriModel;
 |
 */
 
-//JOBSHEET 7 
-//praktikum 1 - no 5 
 Route::pattern('id', '[0-9]+');
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
@@ -114,6 +112,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         //Impor File Excel Menu Data Kategori 
         Route::get('import', [KategoriController::class, 'import']); // ajax form upload excel
         Route::post('import_ajax', [KategoriController::class, 'import_ajax']); // ajax import excel
+        //Ekspor file excel data kategori 
+        Route::get('export_excel', [KategoriController::class, 'export_excel']); //export excel
         });
     });
 
