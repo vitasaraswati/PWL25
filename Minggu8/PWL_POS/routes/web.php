@@ -11,7 +11,9 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SupplierController; 
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\UserController; 
-use App\Http\Controllers\AuthController; 
+use App\Http\Controllers\AuthController;
+use App\Models\KategoriModel;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -83,8 +85,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']); // Hapus via Ajax
         Route::delete('/{id}', [LevelController::class, 'destroy']); // Hapus level
         //Impor File Excel Menu Data Level 
-        Route::get('import', [LevelController::class, 'import']); // ajax form upload excel
-        Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
+            Route::get('import', [LevelController::class, 'import']); // ajax form upload excel
+            Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
         });
     });
 
@@ -105,6 +107,9 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::get('/{id}/delete_ajax', [KategoriController::class, 'confirm_ajax']); // Konfirmasi hapus Ajax
         Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']); // Hapus via Ajax
         Route::delete('/{id}', [KategoriController::class, 'destroy']); // Hapus kategori
+        //Impor File Excel Menu Data Level 
+        Route::get('import', [KategoriController::class, 'import']); // ajax form upload excel
+        Route::post('import_ajax', [KategoriController::class, 'import_ajax']); // ajax import excel
         });
     });
 
