@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // impor untuk function store_ajax 
+use Illuminate\Support\Facades\Validator; 
 use Yajra\DataTables\Facades\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class UserController extends Controller
 {
@@ -395,5 +396,62 @@ class UserController extends Controller
             ]);
         }
         return redirect('/');
+    }
+    public function export_excel()
+    {
+        // Ambil data barang yang akan diekspor
+        $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
+            ->orderBy('user_id')
+            ->with('level')
+            ->get();
+
+        // Load library PhpSpreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); //ambil sheet yg aktif 
+
+        // Set header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'User ID');
+        $sheet->setCellValue('C1', 'Username');
+        $sheet->setCellValue('D1', 'Nama');
+        $sheet->setCellValue('E1', 'Level');
+
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true); //bold header 
+
+        // Looping isi data barang 
+        $no = 1; //mulai dari nomor 1 
+        $baris = 2; //data dimulai dari baris ke 2 
+        foreach ($users as $user) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValue('B' . $baris, $user->user_id);
+            $sheet->setCellValue('C' . $baris, $user->username);
+            $sheet->setCellValue('D' . $baris, $user->nama);
+            $sheet->setCellValue('E' . $baris, $user->level->level_nama);
+            $baris++;
+            $no++;
+        }
+
+        // Set auto size untuk kolom
+        foreach (range('A', 'E') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data User');// set title sheet 
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        $filename = 'Data_User_' . date('Y-m-d_H-i-s') . '.xlsx'; //generate name file + with format date 
+
+        // Set header untuk download file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
     }
 }
