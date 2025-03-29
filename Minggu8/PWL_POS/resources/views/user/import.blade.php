@@ -1,9 +1,10 @@
-<form action="{{ url('/barang/import_ajax') }}" method="POST" id="form-import" enctype="multipart/form-data">
+<form action="{{ url('/user/import_ajax') }}" method="POST" id="form-import" enctype="multipart/form-data">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
+
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Import Data Barang</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Import Data Pengguna</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -11,15 +12,15 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Download Template</label>
-                    <a href="{{ asset('template_barang.xlsx') }}" class="btn btn-info btn-sm" download>
-                        <i class="fa fa-file-excel"></i>Download
+                    <a href="{{ asset('template_user.xlsx') }}" class="btn btn-info btn-sm" download>
+                        <i class="fa fa-file-excel"></i> Download
                     </a>
-                    <small id="error-kategori_id" class="error-text form-text text-danger"></small>
+                    <small id="error-template" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Pilih File</label>
-                    <input type="file" name="file_barang" id="file_barang" class="form-control" required>
-                    <small id="error-file_barang" class="error-text form-text text-danger"></small>
+                    <input type="file" name="file_user" id="file_user" class="form-control" required>
+                    <small id="error-file_user" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -27,6 +28,7 @@
                 <button type="submit" class="btn btn-primary">Upload</button>
             </div>
         </div>
+        
     </div>
 </form>
 
@@ -34,29 +36,30 @@
 $(document).ready(function() {
     $("#form-import").validate({
         rules: {
-            file_barang: {
+            file_user: {
                 required: true,
                 extension: "xlsx"
             },
         },
         submitHandler: function(form) {
-            var formData = new FormData(form); // Jadikan form ke FormData untuk menghandle file
+            var formData = new FormData(form); 
+            
             $.ajax({
                 url: form.action,
                 type: form.method,
-                data: formData, // Data yang dikirim berupa FormData
-                processData: false, // setting processData dan contentType ke false, untuk menghandle file
-                contentType: false,
+                data: formData,
+                processData: false, 
+                contentType: false, 
                 success: function(response) {
-                    if(response.status) { // jika sukses
+                    if (response.status) { 
                         $('#myModal').modal('hide');
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
                             text: response.message
                         });
-                        tableBarang.ajax.reload(); // reload datatable
-                    } else { // jika error
+                        tableUser.ajax.reload(); 
+                    } else { 
                         $('.error-text').text('');
                         $.each(response.msgField, function(prefix, val) {
                             $('#error-'+prefix).text(val[0]);
@@ -67,9 +70,16 @@ $(document).ready(function() {
                             text: response.message
                         });
                     }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kesalahan Server',
+                        text: 'Terjadi kesalahan saat mengunggah file. Silakan coba lagi.'
+                    });
                 }
             });
-            return false;
+            return false; 
         },
         errorElement: 'span',
         errorPlacement: function(error, element) {

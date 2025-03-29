@@ -5,7 +5,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
-
 use App\Http\Controllers\LevelController; 
 use App\Http\Controllers\KategoriController; 
 use App\Http\Controllers\BarangController; 
@@ -59,6 +58,10 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']); // Konfirmasi hapus Ajax
         Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']); // Hapus via Ajax
         Route::delete('/{id}', [UserController::class, 'destroy']); // Hapus pengguna
+
+        //import data user via upload file excel  
+        Route::get('import', [UserController::class, 'import']); // ajax form upload excel
+        Route::post('import_ajax', [UserController::class, 'import_ajax']); // ajax import excel
         });
     });
 
@@ -142,6 +145,7 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // ajax form confirm
         Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // ajax delete
         
+        //import data barang via upload file excel  
         Route::get('/barang/import', [BarangController::class, 'import']); // ajax form upload excel
         Route::post('/barang/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
         });
