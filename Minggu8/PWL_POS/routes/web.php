@@ -63,6 +63,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::post('import_ajax', [UserController::class, 'import_ajax']); // ajax import excel
         //Ekspor file excel data user 
         Route::get('export_excel', [UserController::class, 'export_excel']); //export excel
+        //Ekspor file pdf data user 
+        Route::get('export_pdf', [UserController::class, 'export_pdf']); //export excel
         });
     });
 
