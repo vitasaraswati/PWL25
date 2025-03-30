@@ -145,6 +145,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::post('import_ajax', [SupplierController::class, 'import_ajax']); // ajax import excel
         //Ekspor file excel data supplier 
         Route::get('export_excel', [SupplierController::class, 'export_excel']); //export excel
+        //Ekspor file pdf data supplier 
+        Route::get('export_pdf', [SupplierController::class, 'export_pdf']); //export excel
         });
     });
 
