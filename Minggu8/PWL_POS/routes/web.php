@@ -91,6 +91,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
         Route::post('import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
         //Ekspor file excel data level 
         Route::get('export_excel', [LevelController::class, 'export_excel']); //export excel
+        //Ekspor file pdf data level 
+        Route::get('export_pdf', [LevelController::class, 'export_pdf']); //export excel
         });
     });
 
