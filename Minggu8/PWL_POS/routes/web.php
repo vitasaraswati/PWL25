@@ -170,6 +170,8 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
             Route::post('import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
             //Ekspor file excel data barang 
             Route::get('export_excel', [BarangController::class, 'export_excel']); //export excel
+            //Ekspor file pdf data barang 
+            Route::get('export_pdf', [BarangController::class, 'export_pdf']); //export excel
         });
     });
 });
