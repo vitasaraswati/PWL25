@@ -263,6 +263,14 @@ class LevelController extends Controller
         }
         return redirect('/');
     }
+
+    // menampilkan form impor level 
+    public function import()
+    {
+        return view('level.import');
+    }
+
+    // mengimpor file excel 
     public function import_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
