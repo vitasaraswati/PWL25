@@ -40,6 +40,8 @@ Route::post('/register', [AuthController::class, 'postRegister']);
 
 Route::middleware(['auth'])->group(function () { //artinya semua route di dalam group ini harus login
     Route::get('/', [WelcomeController::class, 'index']);
+    Route::get('/profile', [UserController::class, 'profile']);
+    Route::post('/user/update-photo', [UserController::class, 'updatePhoto']);
 
     // Route Data User (khusus Admin)
     Route::middleware(['authorize:ADM'])->group(function(){

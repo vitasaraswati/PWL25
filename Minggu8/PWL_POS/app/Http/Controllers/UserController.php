@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage; 
 
 class UserController extends Controller
 {
@@ -457,18 +458,87 @@ class UserController extends Controller
     }
     //Ekspor file pdf
     public function export_pdf()
-        {
-            $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
-                ->orderBy('user_id')
-                ->with('level')
-                ->get();
+    {
+        $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
+            ->orderBy('user_id')
+            ->with('level')
+            ->get();
 
-            // use Barryvdh\DomPDF\Facade\Pdf;
-            $pdf = Pdf::loadView('user.export_pdf', ['user' => $users]);
-            $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
-            $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
-            $pdf->render();
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('user.export_pdf', ['user' => $users]);
+        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+        $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
+        $pdf->render();
 
-            return $pdf->stream('Data user ' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('Data user ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    // Profil user
+    public function profile() 
+    {
+        $user = auth()->user();
+    
+        if (!$user) {
+            return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
         }
+
+        $breadcrumb = (object) [
+            'title' => 'Profile User',
+            'list' => ['Home', 'Profile']
+        ];
+    
+        $page = (object) [
+            'title' => 'Profil Pengguna'
+        ];
+    
+        
+        $activeMenu = 'profile'; // Set menu aktif
+    
+        return view('user.profile', compact('user', 'breadcrumb', 'page', 'activeMenu'));
+    }
+    
+    //Update foto profile user 
+    public function updatePhoto(Request $request)
+    {
+        // Validasi file
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+    
+        try {
+            // auth user yang login
+            $user = auth()->user();
+    
+            if (!$user) {
+                return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
+            }
+    
+            // user id
+                $userId = $user->user_id;
+    
+            $userModel = UserModel::find($userId);
+    
+            if (!$userModel) {
+                return redirect('/login')->with('error', 'User tidak ditemukan');
+            }
+    
+            // hapus jika sudah ada foto profile
+            if ($userModel->profile_photo && file_exists(storage_path('app/public/' . $userModel->profile_photo))) {
+                Storage::disk('public')->delete($userModel->profile_photo);
+            }
+    
+            // update foto profile baru 
+            $fileName = 'profile_' . $userId . '_' . time() . '.' . $request->profile_photo->extension();
+            $path = $request->profile_photo->storeAs('profiles', $fileName, 'public');
+    
+            // Update
+            UserModel::where('user_id', $userId)->update([
+                'profile_photo' => $path
+            ]);
+    
+            return redirect()->back()->with('success', 'Foto profile berhasil diperbarui');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengupload foto: ' . $e->getMessage());
+        }
+    }
 }
