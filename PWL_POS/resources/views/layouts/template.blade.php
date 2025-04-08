@@ -32,7 +32,7 @@
       <!-- Brand Logo -->
       <a href="{{ url('/') }}" class="brand-link">
         <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img">
-        <span class="brand-text font-weight-light">POS - Point of Sales</span>
+        <span class="brand-text font-weight-light">PWL - Starter Code</span>
         </a>
 
 <!-- Sidebar -->
