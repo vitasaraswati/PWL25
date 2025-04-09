@@ -8,7 +8,7 @@
                 <button onclick="modalAction('{{ url('/supplier/import') }}')" class="btn btn-info"><i class="fa fa-file-excel"></i> Import Supplier (.xlsx)</button>
                 <a href="{{ url('/supplier/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Supplier (.xlsx)</a>
                 <a href="{{ url('/supplier/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Supplier (.pdf)</a>
-                <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success">Tambah Data</button>
+                <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success"> + Tambah Data</button>
             </div>
         </div>
 
