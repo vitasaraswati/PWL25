@@ -5,10 +5,10 @@
         <div class="card-header">
             <h3 class="card-title">Daftar Supplier</h3>
             <div class="card-tools">
-            <button onclick="modalAction('{{ url('/supplier/import') }}')" class="btn btn-info">Import Supplier (.xlsx)</button>
-                <a href="{{ url('/supplier/export_excel') }}" class="btn btn-primary"><i class="fa fa-file- excel"></i> Export Supplier (.xlsx)</a>
-                <a href="{{ url('/supplier/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file- pdf"></i> Export Supplier (.pdf)</a>
-            <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success">Tambah Data</button>
+                <button onclick="modalAction('{{ url('/supplier/import') }}')" class="btn btn-info"><i class="fa fa-file-excel"></i> Import Supplier (.xlsx)</button>
+                <a href="{{ url('/supplier/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Supplier (.xlsx)</a>
+                <a href="{{ url('/supplier/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Supplier (.pdf)</a>
+                <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success">Tambah Data</button>
             </div>
         </div>
 
@@ -28,13 +28,15 @@
                     <th>Kode Supplier</th>
                     <th>Nama Supplier</th>
                     <th>Alamat Supplier</th>
+                    <th>No. Telepon</th>
+                    <th>Email</th>
                     <th>Aksi</th>
                 </tr>
                 </thead>
             </table>
         </div>
     </div>
-<div id="modal-supplier" class="modal fade animate shake" tabindex="-1" data-backdrop="static" data-keyboard="false" data-width="75%"></div>
+    <div id="modal-supplier" class="modal fade animate shake" tabindex="-1" data-backdrop="static" data-keyboard="false" data-width="75%"></div>
 @endsection
 
 @push('css')
@@ -56,7 +58,10 @@
             ajax: {
                 "url": "{{ url('supplier/list') }}",
                 "dataType": "json",
-                "type": "POST"
+                "type": "POST",
+                "data": function(d) {
+                    d._token = "{{ csrf_token() }}"; // Tambahkan CSRF token untuk POST
+                }
             },
             columns: [
                 {
@@ -84,6 +89,18 @@
                     searchable: true
                 },
                 {
+                    data: "no_telp",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "email",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
                     data: "aksi",
                     className: "text-center",
                     orderable: false,
@@ -98,5 +115,5 @@
             }
         });
     });
-</script>
+    </script>
 @endpush
