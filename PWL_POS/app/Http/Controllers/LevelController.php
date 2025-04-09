@@ -7,23 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LevelController extends Controller
 {
     public function index()
     {
-        // DB::insert('insert into m_level(level_kode, level_nama, created_at) values(?, ?, ?)', ['CUS', 'Pelanggan', now()]);
-        // return "Insert data baru berhasil";
-
-        // $row = DB::update('update m_level set level_nama = ? where level_kode = ?', ['Customer', 'CUS']);
-        // return "update data berhasil. Jumlah data yang diupdate: ".$row." baris";
-
-        // $row = DB::delete('delete from m_level where level_kode = ?', ['CUS']);
-        // return "Delete data berhasil. Jumlah data yang dihapus: ".$row." baris";
-
-        // $data = DB::select('select * from m_level');
-        // return view('level', ['data' => $data]);
-
         $breadcrumb = (object) [
             'title' => 'Daftar Level',
             'list' => ['Home', 'Level'],
@@ -44,19 +35,20 @@ class LevelController extends Controller
     public function list(Request $request)
     {
         $levels = LevelModel::select('level_id', 'level_kode', 'level_nama');
-  
+
         if ($request->level_id) {
             $levels->where('level_id', $request->level_id);
         }
-  
+
         return DataTables::of($levels)
-            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-            ->addColumn('aksi', function ($level) { // menambahkan kolom aksi
+            ->addIndexColumn() // menambahkan kolom index
+            ->addColumn('aksi', function ($level) {
+                // menambahkan kolom aksi
                 // $btn = '<a href="' . url('/level/' . $level->level_id) . '" class="btn btn-info btn-sm">Detail</a> ';
                 // $btn .= '<a href="' . url('/level/' . $level->level_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
                 // $btn .= '<form class="d-inline-block" method="POST" action="' . url('/level/' . $level->level_id) . '">'
                 //     . csrf_field() . method_field('DELETE') .
-                //     '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+                //     '<button type="submit" class="btn btn-danger btn-sm"onclick="return confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
                 $btn = '<button onclick="modalAction(\'' . url('/level/' . $level->level_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/level/' . $level->level_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/level/' . $level->level_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
@@ -73,29 +65,29 @@ class LevelController extends Controller
             'title' => 'Tambah Level',
             'list' => ['Home', 'Level', 'Tambah'],
         ];
-  
+
         $page = (object) [
             'title' => 'Tambah level baru',
         ];
-  
+
         $activeMenu = 'level';
-  
+
         return view('level.create', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
   
-      // Menyimpan data level baru
+    // Menyimpan data level baru
     public function store(Request $request)
     {
         $request->validate([
             'level_kode' => 'required|string|max:5',
             'level_nama' => 'required|string|max:100'
         ]);
-  
+
         LevelModel::create([
             'level_kode' => $request->level_kode,
             'level_nama' => $request->level_nama
         ]);
-  
+
         return redirect('/level')->with('success', 'Data level berhasil ditambahkan');
     }
   
@@ -157,19 +149,19 @@ class LevelController extends Controller
     public function destroy(string $id)
     {
         $check = LevelModel::find($id);
-          if (!$check) {
-              return redirect('/level')->with('error', 'Data level tidak ditemukan');
-          }
-  
-          try {
-              LevelModel::destroy($id);
-              return redirect('/level')->with('success', 'Data level berhasil dihapus');
-          } catch (\Illuminate\Database\QueryException $e) {
-              return redirect('/level')->with('error', 'Data level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
-          }
-      }
+        if (!$check) {
+            return redirect('/level')->with('error', 'Data level tidak ditemukan');
+        }
 
-    //JOBSHEET 6 
+        try {
+            LevelModel::destroy($id);
+            return redirect('/level')->with('success', 'Data level berhasil dihapus');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect('/level')->with('error', 'Data level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
+        }
+    }
+    
+    //OPERASI AJAX 
     // membuat dan menampilkan halaman form tambah level dgn Ajax
     public function create_ajax()
     {
@@ -273,4 +265,135 @@ class LevelController extends Controller
         return redirect('/');
     }
 
+    // menampilkan form impor level 
+    public function import()
+    {
+        return view('level.import');
+    }
+
+    // mengimpor file excel 
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_level' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_level');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $insert = [];
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) { // baris ke 1 adalah header
+                        $insert[] = [
+                            'level_id' => $value['A'],
+                            'level_kode' => $value['B'],
+                            'level_nama' => $value['C'],
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+
+                if (count($insert) > 0) {
+                    LevelModel::insertOrIgnore($insert);
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data berhasil diimport'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ]);
+        }
+
+        return redirect('/');
+    }
+    public function export_excel()
+    {
+        // Ambil data barang yang akan diekspor
+        $levels = LevelModel::select('level_id', 'level_kode', 'level_nama')
+            ->orderBy('level_id')
+            ->get();
+
+        // Load library PhpSpreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); //ambil sheet yg aktif 
+
+        // Set header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'ID Level');
+        $sheet->setCellValue('C1', 'Kode Level');
+        $sheet->setCellValue('D1', 'Nama Level');
+
+
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true); //bold header 
+
+        // Looping isi data barang 
+        $no = 1; //mulai dari nomor 1 
+        $baris = 2; //data dimulai dari baris ke 2 
+        foreach ($levels as $level) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValue('B' . $baris, $level->level_id);
+            $sheet->setCellValue('C' . $baris, $level->level_kode);
+            $sheet->setCellValue('D' . $baris, $level->level_nama);
+            $baris++;
+            $no++;
+        }
+
+        // Set auto size untuk kolom
+        foreach (range('A', 'D') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Level');// set title sheet 
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        $filename = 'Data_Level_' . date('Y-m-d_H-i-s') . '.xlsx'; //generate name file + with format date 
+
+        // Set header untuk download file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    //Ekspor file pdf
+    public function export_pdf()
+    {
+        $level = LevelModel::select('level_id', 'level_kode', 'level_nama')
+            ->orderBy('level_id')
+            ->get();
+ 
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('level.export_pdf', ['level' => $level]);
+        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+        $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
+        $pdf->render();
+ 
+        return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 }

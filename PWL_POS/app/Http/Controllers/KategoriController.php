@@ -7,29 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KategoriController extends Controller
 {
     public function index()
     {
-        /* $data = [
-            'kategori_kode' => 'SNK',
-            'kategori_nama' => 'Snack/Makanan Ringan',
-            'created_at' => now()
-        ];
-
-        DB::table('m_kategori')->insert($data);
-        return 'Insert data baru berhasil'; */
-
-    // $row = DB::table('m_kategori')->where('kategori_kode', 'SNK')->update(['kategori_nama' => 'Camilan']);
-    // return 'Update data berhasil. Jumlah data yang diupdate: '.$row.' baris';
-
-    // $row DB::table('m_kategori')->where('kategori_kode', 'SNK')->delete();
-    // return 'Delete data berhasil. Jumlah data yang dihapus: $row baris';
-
-    // $data = DB::table('m_kategori')->get();
-    //  return view('kategori', ['data' => $data]);
-        
         $breadcrumb = (object) [
             'title' => 'Daftar Kategori',
             'list' => ['Home', 'Kategori'],
@@ -173,7 +158,7 @@ class KategoriController extends Controller
         }
     }
 
-    //JOBSHEET 6 
+    //OPERASI AJAX
     // membuat dan menampilkan halaman form tambah kategori dgn Ajax
     public function create_ajax()
     {
@@ -280,5 +265,127 @@ class KategoriController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function import()
+    {
+        return view('kategori.import');
+    }
+    
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_kategori' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+    
+            $file = $request->file('file_kategori');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+    
+            $insert = [];
+            if (count($data) > 1) {
+                foreach ($data as $row => $value) {
+                    if ($row > 1) { // Lewati header (baris pertama)
+                        $insert[] = [
+                            'kategori_kode' => $value['A'], // Ambil data dari kolom A
+                            'kategori_nama' => $value['B'], // Ambil data dari kolom B
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+                if (count($insert) > 0) {
+                    KategoriModel::insertOrIgnore($insert);
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data kategori berhasil diimport'
+                    ]);
+                }
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ]);
+        }
+        return redirect('/');
+    }
+
+    public function export_excel()
+    {
+        // Ambil data kategori yang akan diekspor
+        $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')->get();
+
+        // Load library PhpSpreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); //ambil sheet yg aktif 
+
+        // Set header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Kategori');
+        $sheet->setCellValue('C1', 'Nama Kategori');
+
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true); //bold header 
+
+        // Looping isi data kategori 
+        $no = 1; //mulai dari nomor 1 
+        $baris = 2; //data dimulai dari baris ke 2 
+        foreach ($kategori as $data) {
+            foreach ($kategori as $data) {
+                $sheet->setCellValue('A' . $baris, $no++);
+                $sheet->setCellValue('B' . $baris, $data->kategori_kode);
+                $sheet->setCellValue('C' . $baris, $data->kategori_nama);
+                $baris++;
+            }
+
+        // Set auto size untuk kolom
+        foreach (range('A', 'C') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Kategori');// set title sheet 
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        $filename = 'Data_Kategori_' . date('Y-m-d_H-i-s') . '.xlsx'; //generate name file + with format date 
+
+        // Set header untuk download file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+        }
+    }
+    
+    //Ekspor file pdf
+    public function export_pdf()
+    {
+        $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')
+            ->orderBy('kategori_id')
+            ->get();
+
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+        $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
+        $pdf->render();
+
+        return $pdf->stream('Data kategori ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
