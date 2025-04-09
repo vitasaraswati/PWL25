@@ -59,8 +59,7 @@
     <table class="border-bottom-header">
         <tr>
             <td width="15%" class="text-center">
-                {{-- <img src="{{ asset('polinema-bw.png') }}" class="image"> --}} {{-- path gambar logo error --}}
-                <img src="{{ public_path('polinema-bw.png') }}" class="image"> {{-- path gambar logo alternatif --}}
+                <img src="{{ public_path('polinema-bw.png') }}" class="image">
             </td>
             <td width="85%">
                 <span class="text-center d-block font-11 font-bold mb-1">
@@ -82,7 +81,7 @@
         </tr>
     </table>
 
-   <h3 class="text-center">LAPORAN DATA SUPPLIER</h3>
+    <h3 class="text-center">LAPORAN DATA SUPPLIER</h3>
 
     <table class="border-all">
         <thead>
@@ -91,6 +90,8 @@
                 <th>Kode Supplier</th>
                 <th>Nama Supplier</th>
                 <th>Alamat Supplier</th>
+                <th>No. Telepon</th>
+                <th>Email</th>
             </tr>
         </thead>
         <tbody>
@@ -98,8 +99,10 @@
             <tr>
                 <td class="text-center">{{ $loop->iteration }}</td>
                 <td>{{ $s->supplier_kode }}</td>
-                <td>{{ $s->supplier_nama}}</td>
+                <td>{{ $s->supplier_nama }}</td>
                 <td>{{ $s->supplier_alamat }}</td>
+                <td>{{ $s->no_telp ?? '-' }}</td>
+                <td>{{ $s->email ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>

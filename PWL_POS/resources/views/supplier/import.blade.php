@@ -36,7 +36,8 @@ $(document).ready(function() {
         rules: {
             file_supplier: {
                 required: true,
-                extension: "xlsx|xls"
+                extension: "xlsx|xls",
+                maxsize: 1048576 // 1MB in bytes (1024 KB)
             },
         },
         submitHandler: function(form) {
@@ -50,17 +51,22 @@ $(document).ready(function() {
                 contentType: false,
                 success: function(response) {
                     if (response.status) {
-                        $('#modal-master').modal('hide');
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
                             text: response.message
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#modal-supplier').modal('hide'); // Tutup modal setelah klik "OK"
+                                if (response.reloadTable) {
+                                    tableSupplier.ajax.reload(); // Reload the DataTable
+                                }
+                            }
                         });
-                        window.dataSupplier.ajax.reload(); // Reload the DataTable
                     } else {
                         $('.error-text').text('');
                         $.each(response.msgField, function(prefix, val) {
-                            $('#error-'+prefix).text(val[0]);
+                            $('#error-' + prefix).text(val[0]);
                         });
                         Swal.fire({
                             icon: 'error',
@@ -85,10 +91,10 @@ $(document).ready(function() {
             error.addClass('invalid-feedback');
             element.closest('.form-group').append(error);
         },
-        highlight: function(element, errorClass, validClass) {
+        highlight: function(element) {
             $(element).addClass('is-invalid');
         },
-        unhighlight: function(element, errorClass, validClass) {
+        unhighlight: function(element) {
             $(element).removeClass('is-invalid');
         }
     });

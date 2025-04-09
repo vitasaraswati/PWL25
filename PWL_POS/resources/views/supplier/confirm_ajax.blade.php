@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -25,7 +25,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Hapus Data Supplier</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -45,6 +45,14 @@
                         <tr>
                             <th class="text-right col-3">Supplier Alamat:</th>
                             <td class="col-9">{{ $supplier->supplier_alamat }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right col-3">No. Telepon:</th>
+                            <td class="col-9">{{ $supplier->no_telp ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-right col-3">Email:</th>
+                            <td class="col-9">{{ $supplier->email ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
@@ -67,13 +75,13 @@
                         data: $(form).serialize(),
                         success: function(response) {
                             if (response.status) {
-                                $('#myModal').modal('hide');
+                                $('#modal-supplier').modal('hide'); // Sesuaikan ID modal dengan yang ada di index.blade.php
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                dataSupplier.ajax.reload();
+                                tableSupplier.ajax.reload(); // Sesuaikan dengan nama variabel DataTables di index.blade.php
                             } else {
                                 $('.error-text').text('');
                                 $.each(response.msgField, function(prefix, val) {
@@ -85,6 +93,13 @@
                                     text: response.message
                                 });
                             }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Gagal menghapus data. Silakan coba lagi.'
+                            });
                         }
                     });
                     return false;

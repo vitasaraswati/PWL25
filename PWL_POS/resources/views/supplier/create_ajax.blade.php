@@ -2,7 +2,7 @@
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-        
+
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data Supplier</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -26,6 +26,16 @@
                     <input type="text" name="supplier_alamat" id="supplier_alamat" class="form-control" required>
                     <small id="error-supplier_alamat" class="error-text form-text text-danger"></small>
                 </div>
+                <div class="form-group">
+                    <label>No. Telepon</label>
+                    <input type="text" name="no_telp" id="no_telp" class="form-control">
+                    <small id="error-no_telp" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" class="form-control">
+                    <small id="error-email" class="error-text form-text text-danger"></small>
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -37,7 +47,7 @@
 </form>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
                 supplier_kode: {
@@ -54,25 +64,33 @@
                     required: true,
                     minlength: 3,
                     maxlength: 100
+                },
+                no_telp: {
+                    required: false,
+                    maxlength: 15
+                },
+                email: {
+                    email: true,
+                    maxlength: 100
                 }
             },
-            submitHandler: function(form) {
+            submitHandler: function (form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status) {
-                            $('#myModal').modal('hide');
+                            $('#modal-supplier').modal('hide');
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataKategori.ajax.reload();
+                            tableSupplier.ajax.reload(); // Ubah dari dataKategori ke tableSupplier
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function(prefix, val) {
+                            $.each(response.msgField, function (prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
                             Swal.fire({
@@ -86,16 +104,15 @@
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function(error, element) {
+            errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function(element) {
+            highlight: function (element) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function(element) {
+            unhighlight: function (element) {
                 $(element).removeClass('is-invalid');
             }
         });
     });
-</script>
