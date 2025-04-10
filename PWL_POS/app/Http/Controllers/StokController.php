@@ -287,7 +287,7 @@ class StokController extends Controller
         $sheet->setCellValue('B1', 'ID Stok');
         $sheet->setCellValue('C1', 'Kode Barang');
         $sheet->setCellValue('D1', 'Nama Barang');
-        $sheet->setCellValue('E1', 'Nama User');
+        $sheet->setCellValue('E1', 'Petugas Update');
         $sheet->setCellValue('F1', 'Jumlah');
         $sheet->setCellValue('G1', 'Tanggal Stok');
 
