@@ -9,6 +9,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\KategoriController; 
 use App\Http\Controllers\BarangController; 
 use App\Http\Controllers\SupplierController; 
+use App\Http\Controllers\StokController; 
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\UserController; 
 use App\Http\Controllers\AuthController;
@@ -182,6 +183,27 @@ Route::middleware(['auth'])->group(function () { //artinya semua route di dalam 
             Route::get('export_excel', [BarangController::class, 'export_excel']); //export excel
             //Ekspor file pdf data barang 
             Route::get('export_pdf', [BarangController::class, 'export_pdf']); //export excel
+        });
+    });
+
+    // Route Data Stok (Admin & Manajer)
+    Route::middleware(['authorize:ADM,MNG'])->group(function () {
+        Route::group(['prefix' => 'stok'], function () {
+            Route::get('/', [StokController::class, 'index']); // Halaman utama stok
+            Route::post('/list', [StokController::class, 'list']); // Data untuk DataTables
+            // Operasi AJAX
+            Route::get('/create_ajax', [StokController::class, 'create_ajax']); // Form tambah via AJAX
+            Route::post('/ajax', [StokController::class, 'store_ajax']); // Simpan via AJAX
+            Route::get('/{id}/show_ajax', [StokController::class, 'show_ajax']); // Detail via AJAX
+            Route::get('/{id}/edit_ajax', [StokController::class, 'edit_ajax']); // Form edit via AJAX
+            Route::put('/{id}/update_ajax', [StokController::class, 'update_ajax']); // Update via AJAX
+            Route::get('/{id}/delete_ajax', [StokController::class, 'confirm_ajax']); // Konfirmasi hapus AJAX
+            Route::delete('/{id}/delete_ajax', [StokController::class, 'delete_ajax']); // Hapus via AJAX
+            // Impor dan Ekspor
+            Route::get('/import', [StokController::class, 'import']); // Form upload Excel
+            Route::post('/import_ajax', [StokController::class, 'import_ajax']); // Impor Excel via AJAX
+            Route::get('/export_excel', [StokController::class, 'export_excel']); // Ekspor Excel
+            Route::get('/export_pdf', [StokController::class, 'export_pdf']); // Ekspor PDF
         });
     });
 });
