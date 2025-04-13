@@ -194,6 +194,13 @@ class KategoriController extends Controller
         return redirect('/');
     }
 
+     //menampilkan detail dengan ajax
+    public function show_ajax(string $id)
+    {
+        $kategori = KategoriModel::find($id);
+        return view('kategori.show_ajax', ['kategori' => $kategori]);
+    }
+
     // mengedit data kategori dgn ajax
     public function edit_ajax(string $id)
     {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LevelModel; 
+use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -19,15 +19,15 @@ class LevelController extends Controller
             'title' => 'Daftar Level',
             'list' => ['Home', 'Level'],
         ];
-    
+
         $page = (object) [
             'title' => 'Daftar level yang terdaftar dalam sistem',
         ];
-    
+
         $activeMenu = 'level';
-    
+
         $level = LevelModel::all(); // ambil semua data level dari db pwl_pos
-    
+
         return view('level.index', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu, 'page' => $page, 'level' => $level]);
     }
 
@@ -57,7 +57,7 @@ class LevelController extends Controller
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
             ->make(true);
     }
-  
+
     // Menampilkan form tambah level
     public function create()
     {
@@ -74,7 +74,7 @@ class LevelController extends Controller
 
         return view('level.create', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
-  
+
     // Menyimpan data level baru
     public function store(Request $request)
     {
@@ -90,45 +90,45 @@ class LevelController extends Controller
 
         return redirect('/level')->with('success', 'Data level berhasil ditambahkan');
     }
-  
+
     // Menampilkan detail level
     public function show(string $id)
     {
         $level = LevelModel::find($id);
-  
+
         $breadcrumb = (object) [
             'title' => 'Detail Level',
             'list' => ['Home', 'Level', 'Detail'],
         ];
-  
+
         $page = (object) [
             'title' => 'Detail level',
         ];
-  
+
         $activeMenu = 'level';
-  
+
         return view('level.show', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu, 'page' => $page, 'level' => $level]);
     }
-  
+
     // Menampilkan form edit level
     public function edit(string $id)
     {
         $level = LevelModel::find($id);
-  
+
         $breadcrumb = (object) [
             'title' => 'Edit Level',
             'list' => ['Home', 'Level', 'Edit'],
         ];
-  
+
         $page = (object) [
             'title' => 'Edit level',
         ];
-  
+
         $activeMenu = 'level';
-  
+
         return view('level.edit', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu, 'page' => $page, 'level' => $level]);
     }
-  
+
     // Memperbarui data level
     public function update(Request $request, string $id)
     {
@@ -136,15 +136,15 @@ class LevelController extends Controller
             'level_kode' => 'required|string|max:5',
             'level_nama' => 'required|string|max:100'
         ]);
-  
+
         LevelModel::find($id)->update([
             'level_kode' => $request->level_kode,
             'level_nama' => $request->level_nama
         ]);
-  
+
         return redirect('/level')->with('success', 'Data level berhasil diubah');
     }
-  
+
     // Menghapus data level
     public function destroy(string $id)
     {
@@ -160,7 +160,7 @@ class LevelController extends Controller
             return redirect('/level')->with('error', 'Data level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
     }
-    
+
     //OPERASI AJAX 
     // membuat dan menampilkan halaman form tambah level dgn Ajax
     public function create_ajax()
@@ -193,16 +193,22 @@ class LevelController extends Controller
         return redirect('/');
     }
 
+    //menampilkan detail dengan ajax
+    public function show_ajax(string $id)
+    {
+        $level = LevelModel::find($id);
+        return view('level.show_ajax', ['level' => $level]);
+    }
+
     // mengedit data level dgn ajax
     public function edit_ajax(string $id)
-     {
-         $level = LevelModel::find($id);
-         return view('level.edit_ajax', ['level' => $level]);
- 
-     }
+    {
+        $level = LevelModel::find($id);
+        return view('level.edit_ajax', ['level' => $level]);
+    }
 
     // menyimpan data level yang sudah diedit dgn ajax 
-     public function update_ajax(Request $request, string $id)
+    public function update_ajax(Request $request, string $id)
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
@@ -362,7 +368,7 @@ class LevelController extends Controller
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
-        $sheet->setTitle('Data Level');// set title sheet 
+        $sheet->setTitle('Data Level'); // set title sheet 
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 
@@ -387,13 +393,13 @@ class LevelController extends Controller
         $level = LevelModel::select('level_id', 'level_kode', 'level_nama')
             ->orderBy('level_id')
             ->get();
- 
+
         // use Barryvdh\DomPDF\Facade\Pdf;
         $pdf = Pdf::loadView('level.export_pdf', ['level' => $level]);
         $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
         $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
         $pdf->render();
- 
+
         return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
