@@ -4,7 +4,7 @@
         <div class="modal-header">
             <h5 class="modal-title">Kesalahan</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">×</span>
             </button>
         </div>
         <div class="modal-body">
@@ -19,13 +19,12 @@
 @else
 <form action="{{ url('/penjualan/' . $penjualan->penjualan_id . '/delete_ajax') }}" method="POST" id="form-delete">
     @csrf
-    @method('DELETE')
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Hapus Data Penjualan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -51,6 +50,33 @@
                         <td class="col-9">{{ $penjualan->penjualan_tanggal ?? '-' }}</td>
                     </tr>
                 </table>
+                <h5>Detail Barang</h5>
+                <table class="table table-sm table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($penjualan->details as $detail)
+                            <tr>
+                                <td>{{ $detail->barang->barang_nama ?? '-' }}</td>
+                                <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                                <td>{{ $detail->jumlah }}</td>
+                                <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3">Total</th>
+                            <th>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Batal</button>
@@ -67,7 +93,7 @@
             submitHandler: function (form) {
                 $.ajax({
                     url: form.action,
-                    type: form.method,
+                    type: 'POST', // Menggunakan POST sesuai implementasi controller
                     data: $(form).serialize(),
                     success: function (response) {
                         if (response.status) {
@@ -77,12 +103,14 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataPenjualan.ajax.reload(); // reload datatable
+                            tablePenjualan.ajax.reload(); // Mengubah dataPenjualan menjadi tablePenjualan
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function (prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
-                            });
+                            if (response.msgField) {
+                                $.each(response.msgField, function (prefix, val) {
+                                    $('#error-' + prefix).text(val[0]);
+                                });
+                            }
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',

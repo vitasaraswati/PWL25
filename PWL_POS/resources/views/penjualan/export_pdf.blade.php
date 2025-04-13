@@ -90,8 +90,9 @@
                 <th>No</th>
                 <th>Kode Penjualan</th>
                 <th>Nama Pembeli</th>
-                <th>Petugas</th>
+                <th>Petugas/Kasir</th>
                 <th>Tanggal Penjualan</th>
+                <th class="text-right">Total Transaksi</th>
             </tr>
         </thead>
         <tbody>
@@ -102,9 +103,18 @@
                 <td>{{ $p->pembeli }}</td>
                 <td>{{ $p->user->nama ?? 'N/A' }}</td>
                 <td>{{ $p->penjualan_tanggal }}</td>
+                <td class="text-right">
+                    Rp {{ number_format($p->details->sum('subtotal'), 0, ',', '.') }}
+                </td>
             </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="5" class="text-right">Total Penjualan</th>
+                <th class="text-right">Rp {{ number_format($totalPenjualan, 0, ',', '.') }}</th>
+            </tr>
+        </tfoot>
     </table>
 </body>
 </html>

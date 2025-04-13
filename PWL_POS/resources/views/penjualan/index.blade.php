@@ -42,6 +42,7 @@
                         <th>Pembeli</th>
                         <th>Petugas/Kasir</th>
                         <th>Tanggal Penjualan</th>
+                        <th>Total</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -85,35 +86,42 @@
                     {
                         data: "penjualan_kode",
                         className: "",
-                        width: "20%",
+                        width: "15%",
                         orderable: true,
                         searchable: true
                     },
                     {
                         data: "pembeli",
                         className: "",
-                        width: "20%",
+                        width: "15%",
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: "user.nama",
+                        data: "username", 
                         className: "",
-                        width: "20%",
+                        width: "15%",
                         orderable: true,
                         searchable: true
                     },
                     {
                         data: "penjualan_tanggal",
                         className: "",
-                        width: "20%",
+                        width: "15%",
                         orderable: true,
+                        searchable: false
+                    },
+                    {
+                        data: "total",
+                        className: "text-right",
+                        width: "15%",
+                        orderable: false,
                         searchable: false
                     },
                     {
                         data: "aksi",
                         className: "text-center",
-                        width: "15%",
+                        width: "20%",
                         orderable: false,
                         searchable: false
                     }
