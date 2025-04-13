@@ -86,8 +86,8 @@
 
             <li class="nav-item">
                 <a href="{{ url('/penjualan') }}" class="nav-link {{ ($activeMenu == 'penjualan') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-shopping-bag"></i>
-                    <p>Data Penjualan</p>
+                    <i class="nav-icon fas fa-cash-register"></i>
+                    <p>Transaksi Penjualan</p>
                 </a>
             </li>
 
