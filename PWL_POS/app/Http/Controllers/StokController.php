@@ -135,6 +135,7 @@ class StokController extends Controller
         ]);
     }
 
+
     // Menyimpan perubahan stok via AJAX
     public function update_ajax(Request $request, string $id)
     {
@@ -143,7 +144,7 @@ class StokController extends Controller
                 'barang_id' => 'required|integer|exists:m_barang,barang_id',
                 'user_id' => 'required|integer|exists:m_user,user_id',
                 'jumlah' => 'required|integer|min:1',
-                'stok_tanggal' => 'required|date'
+                'stok_tanggal' => 'required|date_format:Y-m-d\TH:i',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -249,7 +250,7 @@ class StokController extends Controller
                             'barang_id' => $value['A'],
                             'user_id' => $value['B'],
                             'jumlah' => $value['C'],
-                            'stok_tanggal' => $value['D'],
+                            'stok_tanggal' => now(),
                             'created_at' => now(),
                         ];
                     }

@@ -61,8 +61,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tanggal Stok</label>
-                        <input type="date" name="stok_tanggal" id="stok_tanggal" class="form-control"
-                            value="{{ $stok->stok_tanggal }}" required>
+                        <input type="datetime-local" name="stok_tanggal" value="{{ \Carbon\Carbon::parse($stok->stok_tanggal)->format('Y-m-d\TH:i') }}">
                         <small id="error-stok_tanggal" class="error-text form-text text-danger"></small>
                     </div>
                 </div>
