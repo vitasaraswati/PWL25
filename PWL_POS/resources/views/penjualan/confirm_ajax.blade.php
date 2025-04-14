@@ -19,6 +19,7 @@
 @else
 <form action="{{ url('/penjualan/' . $penjualan->penjualan_id . '/delete_ajax') }}" method="POST" id="form-delete">
     @csrf
+    <input type="hidden" name="_method" value="DELETE">
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">

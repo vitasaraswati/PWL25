@@ -16,6 +16,7 @@
 @else
 <form action="{{ url('/penjualan/' . $penjualan->penjualan_id . '/update_ajax') }}" method="POST" id="form-edit">
     @csrf
+    <input type="hidden" name="_method" value="PUT">
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -183,7 +184,7 @@
             submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
-                    type: 'POST', // Menggunakan POST sesuai implementasi controller
+                    type: 'PUT', // Menggunakan POST sesuai implementasi controller
                     data: $(form).serialize(),
                     success: function(response) {
                         if (response.status) {

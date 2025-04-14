@@ -500,9 +500,9 @@ class PenjualanController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A1', 'No');
-        $sheet->setCellValue('B1', 'Petugas/Kasir');
-        $sheet->setCellValue('C1', 'Kode Penjualan');
-        $sheet->setCellValue('D1', 'Pembeli');
+        $sheet->setCellValue('B1', 'Kode Penjualan');
+        $sheet->setCellValue('C1', 'Pembeli');
+        $sheet->setCellValue('D1', 'Petugas/Kasir');
         $sheet->setCellValue('E1', 'Tanggal');
 
         $sheet->getStyle('A1:E1')->getFont()->setBold(true);
@@ -511,9 +511,9 @@ class PenjualanController extends Controller
         $baris = 2;
         foreach ($penjualans as $penjualan) {
             $sheet->setCellValue('A' . $baris, $no);
-            $sheet->setCellValue('B' . $baris, $penjualan->user->nama);
-            $sheet->setCellValue('C' . $baris, $penjualan->penjualan_kode);
-            $sheet->setCellValue('D' . $baris, $penjualan->pembeli);
+            $sheet->setCellValue('B' . $baris, $penjualan->penjualan_kode);
+            $sheet->setCellValue('C' . $baris, $penjualan->pembeli);
+            $sheet->setCellValue('D' . $baris, $penjualan->user->nama);
             $sheet->setCellValue('E' . $baris, $penjualan->penjualan_tanggal);
             $baris++;
             $no++;
