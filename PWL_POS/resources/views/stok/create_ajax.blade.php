@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal Stok</label>
-                    <input type="date" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
+                    <input type="datetime-local" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
                     <small id="error-stok_tanggal" class="error-text form-text text-danger"></small>
                 </div>
             </div>
