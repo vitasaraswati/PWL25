@@ -48,8 +48,7 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal</label>
-                    <input value="{{ \Carbon\Carbon::parse($penjualan->penjualan_tanggal)->format('Y-m-d') }}"
-                           type="date" name="penjualan_tanggal" class="form-control">
+                    <input type="datetime-local" name="penjualan_tanggal" class="form-control" value="{{ now()->format('Y-m-d') }}" readonly>
                     <small id="error-penjualan_tanggal" class="error-text text-danger"></small>
                 </div>
                 <div class="form-group">

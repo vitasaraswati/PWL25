@@ -324,7 +324,7 @@ class PenjualanController extends Controller
     {
         return view('penjualan.import');
     }
-    
+
     // Impor file excel
     public function import_ajax(Request $request)
     {
@@ -360,7 +360,7 @@ class PenjualanController extends Controller
                             continue; // Lewati header
                         }
 
-                        if (empty($value['B']) && empty($value['E']) && empty($value['F'])) {
+                        if (empty($value['B']) && empty($value['D']) && empty($value['E'])) {
                             continue; // Lewati baris kosong
                         }
 
@@ -373,21 +373,12 @@ class PenjualanController extends Controller
                                 continue;
                             }
 
-                            $tanggal = null;
-                            if (is_numeric($value['D'])) {
-                                $tanggal = Date::excelToDateTimeObject($value['D'])->format('Y-m-d');
-                            } else {
-                                try {
-                                    $tanggal = Carbon::createFromFormat('d/m/Y', $value['D'])->format('Y-m-d');
-                                } catch (\Exception $e) {
-                                    continue;
-                                }
-                            }
-
                             if (empty($value['C'])) {
                                 continue;
                             }
 
+                            $tanggal = now(); 
+                            
                             $penjualan = [
                                 'user_id'           => $value['A'],
                                 'penjualan_kode'    => $value['B'],
@@ -401,13 +392,13 @@ class PenjualanController extends Controller
                             $penjualans[] = $penjualan;
                         }
 
-                        if (!empty($value['E']) && !empty($value['F'])) {
-                            $barang = BarangModel::find($value['E']);
+                        if (!empty($value['E']) && !empty($value['E'])) {
+                            $barang = BarangModel::find($value['D']);
                             if (!$barang) {
                                 continue;
                             }
 
-                            if (!is_numeric($value['F']) || $value['F'] <= 0) {
+                            if (!is_numeric($value['E']) || $value['E'] <= 0) {
                                 continue;
                             }
 
@@ -416,10 +407,10 @@ class PenjualanController extends Controller
                             }
 
                             $details[] = [
-                                'penjualan_kode' => $currentPenjualanKode, // Digunakan sementara untuk mencocokkan penjualan_id
-                                'barang_id'      => $value['E'],
+                                'penjualan_kode' => $currentPenjualanKode,
+                                'barang_id'      => $value['D'],
                                 'harga'          => $barang->harga_jual,
-                                'jumlah'         => (int) $value['F'],
+                                'jumlah'         => (int) $value['E'],
                                 'created_at'     => now(),
                                 'updated_at'     => now(),
                             ];

@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <label>Tanggal Penjualan</label>
-                    <input type="date" name="penjualan_tanggal" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
+                    <input type="datetime-local" name="penjualan_tanggal" class="form-control" value="{{ now()->format('Y-m-d\TH:i') }}" required>
                     <small id="error-penjualan_tanggal" class="error-text text-danger"></small>
                 </div>
                 <div class="form-group">
