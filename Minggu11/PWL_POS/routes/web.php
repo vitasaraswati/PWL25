@@ -38,6 +38,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 //Route Register akun 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/register1', [AuthController::class, 'register1'])->name('register1');
 Route::post('/register', [AuthController::class, 'postRegister']);
 
 Route::middleware(['auth'])->group(function () { //artinya semua route di dalam group ini harus login
